@@ -11,6 +11,17 @@ Options -Indexes
     </IfModule>
 </FilesMatch>
 
+# Arsip/backup (mis. foto/asn.zip) tetap disimpan di server tapi tidak boleh diunduh lewat web
+<FilesMatch "(?i)\.(zip|rar|7z|tar|gz|tgz|bz2|sql|bak|old|log)$">
+    <IfModule authz_core_module>
+        Require all denied
+    </IfModule>
+    <IfModule !authz_core_module>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
 <IfModule mod_php.c>
     php_flag engine off
 </IfModule>
