@@ -184,8 +184,9 @@ public function save_image()
     $image_parts  = explode(";base64,", $image, 2);
     $image_base64 = base64_decode($image_parts[1], true);
 
-    // pastikan isinya benar-benar gambar PNG
-    if ($image_base64 === false || strncmp($image_base64, "\x89PNG\r\n\x1a\n", 8) !== 0 || @getimagesizefromstring($image_base64) === false) {
+    // pastikan isinya benar-benar gambar (html2canvas mengirim JPEG, PNG juga diterima)
+    $info = $image_base64 === false ? false : @getimagesizefromstring($image_base64);
+    if ($info === false || !in_array($info[2], array(IMAGETYPE_PNG, IMAGETYPE_JPEG), true)) {
         echo json_encode(['status' => 'error', 'message' => 'Gagal decode gambar']);
         return;
     }
