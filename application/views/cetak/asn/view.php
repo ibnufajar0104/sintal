@@ -52,7 +52,9 @@
                                                 <img style="border: 1px solid #F8F8F8;" class="template_depan" src="<?= base_url() ?>asset/template/depan.png" alt="">
 
                                                 <div class="singkatan">
-
+                                                    <?php if (!empty($skpd['singkatan'])) : ?>
+                                                    <p><?= html_escape($skpd['singkatan']) ?></p>
+                                                    <?php endif; ?>
                                                 </div>
 
                                                 <div class="background">

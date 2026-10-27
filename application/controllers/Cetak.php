@@ -83,13 +83,17 @@ class Cetak extends CI_Controller {
         }
         $this->qrcodegenerate($data_person['nip']);
 
+        // nama dinas dari data lokal, supaya tetap tampil walau API nametag tidak bisa diakses
+        $skpd = $this->app->view_where('ref_skpd',array('nama_skpd' => $data_person['instansi']))->row_array();
+
         $data = array(
             'judul' => 'Cetak ID Card PNS',
             'mn_idcard_asn' => true,
             'jquery' => 'cetak/asn/jquery',
             'css' => 'cetak/asn/css',
             'pengaturan' => $this->json(),
-            'data' => $data_person
+            'data' => $data_person,
+            'skpd' => $skpd
         );
    
         $this->template->display('cetak/asn/view', $data);

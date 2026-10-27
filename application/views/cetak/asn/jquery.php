@@ -345,7 +345,10 @@ function get_data() {
 
 
 
-            if (data.length === 0) {} else {
+            if (!data || data.length === 0) {
+                // API tidak tersedia: pakai data lokal
+                background(<?= json_encode($data['eselon']) ?>);
+            } else {
 
 
                 console.log(data);
@@ -355,6 +358,9 @@ function get_data() {
                 alamat(data[0].instansi);
                 background(data[0].eselon);
             }
+        },
+        error: function() {
+            background(<?= json_encode($data['eselon']) ?>);
         },
     });
 }
@@ -380,6 +386,8 @@ function alamat(unitkerja) {
         success: function(data) {
 
             console.log(data);
+            // jangan timpa nama dinas lokal kalau instansi dari API tidak ada di ref_skpd
+            if (!data) return;
             $('.alamat').html(' <p>' + data.alamat + '</p>');
             $('.singkatan').html(' <p>' + data.singkatan + '</p>');
 
