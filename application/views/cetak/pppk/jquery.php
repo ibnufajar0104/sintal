@@ -279,7 +279,8 @@ function get_data() {
 
     $.ajax({
 
-        url: "<?= site_url()?>api_pns/get_by_nip",
+        // API SIMPEG nametag (API BKPSDM GetPerNIP sedang error 500)
+        url: "<?= site_url()?>api/get_data",
         method: "POST",
         dataType: 'json',
         // beforeSend: function() {
@@ -296,14 +297,22 @@ function get_data() {
 
 
 
-            if (data.length === 0) {} else {
-
-
-                console.log(data);
-                $('.jabatan').html('<p>JABATAN: ' + data[0].jabatan + '</p>');
-                alamat(data[0].unitkerja);
-                background(data[0].eselon);
+            // kalau API gagal / NIP tidak ditemukan, tetap pakai data lokal yang sudah tampil
+            if (!data || !data.status || !data.data || data.data.length === 0) {
+                background(null);
+                return;
             }
+
+            var row = data.data[0];
+            console.log(row);
+            if (row.jabatan) {
+                $('.jabatan').html('<p>JABATAN: ' + row.jabatan + '</p>');
+            }
+            alamat(row.instansi);
+            background(row.eselon);
+        },
+        error: function() {
+            background(null);
         },
     });
 }
@@ -329,6 +338,8 @@ function alamat(unitkerja) {
         success: function(data) {
 
             console.log(data);
+            // instansi dari API tidak ada di ref_skpd: jangan timpa data lokal
+            if (!data) return;
             $('.alamat').html(' <p>' + data.alamat + '</p>');
             $('.singkatan').html(' <p>' + data.singkatan + '</p>');
 
@@ -342,7 +353,7 @@ function alamat(unitkerja) {
 }
 
 function background(str) {
-    str = str.slice(0, -3);
+    str = (str || '').slice(0, -3);
     if (str == 'II') {
 
         $('.background').css(
